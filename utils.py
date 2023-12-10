@@ -1,0 +1,2 @@
+REWARD = int
+TERMINAL = bool
