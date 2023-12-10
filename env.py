@@ -1,8 +1,9 @@
+from random import random
 from typing import Tuple, Optional
 
 import numpy as np
 
-from config import POSSIBLE_ACTIONS_MAPPING
+from config import POSSIBLE_ACTIONS_MAPPING, USE_STOCHASTIC_WIND
 from grid import WIND_EFFECT, Grid, BASE_GRID
 from utils import REWARD, TERMINAL
 
@@ -24,6 +25,12 @@ class Env:
     ) -> Tuple[np.array, REWARD, TERMINAL]:
         next_state = state + action
         next_state[0] -= self.wind_effect[state[1]]
+        if USE_STOCHASTIC_WIND and self.wind_effect[state[1]] != 0:
+            stochastic_threshold = random()
+            if stochastic_threshold < 1 / 3:
+                next_state[0] -= 1
+            elif stochastic_threshold < 2 / 3:
+                next_state[0] += 1
         next_state[0] = np.clip(next_state[0], 0, self.grid.shape[0] - 1)
         next_state[1] = np.clip(next_state[1], 0, self.grid.shape[1] - 1)
 
